@@ -1,34 +1,6 @@
 ---
 # tasks file for movabletype6
 
-# Refs: https://github.com/miyagawa/cpanminus/issues/493
-- name: Ensure perl-core installed
-  yum: name=perl-core state=present
-
-# Install CPANm
-- name: Ensure gcc installed
-  yum:  name=gcc state=present
-
-- name: Test for cpanm
-  command: perl -MApp::cpanminus -e1
-  register: result
-  ignore_errors: true
-
-- name:  Install CPANm
-  command: curl -L http://cpanmin.us | perl - App::cpanminus
-  when:  result|failed
-
-- name: add cpanm symbolic link to /usr/bin/
-  file: src=/usr/local/bin/cpanm
-        dest=/usr/bin/cpanm
-        state=link
-
-- name: Ensure required Perl modules installed
-  yum: name={{ item }} state=present
-  with_items:
-    - perl-Test-Harness
-    - perl-Time-HiRes
-
 # Install CPAN module for MT
 - name: Install CPAN modules
   cpanm: name={{ item }}
@@ -57,6 +29,9 @@
 - name: move to application directory
   command: mv /tmp/MT-6.2.4 /var/www/cgi-bin/mt
 
+- name: Create mt-config.cgi
+  template: src=templates/mt-config.cgi.j2 dest=/var/www/cgi-bin/mt/mt-config.cgi
+
 - name: set permission for application directory
   file: path={{ item }} mode=0755
   with_fileglob:
@@ -74,3 +49,6 @@
 
 - name: create Users
   mysql_user: name=mt password=1234qwer priv=mt_db.*:ALL state=present
+
+- name: Add apache conf
+  template: src=templates/mt.conf.j2 dest=/etc/httpd/conf.d/mt.conf
