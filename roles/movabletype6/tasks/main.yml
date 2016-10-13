@@ -10,12 +10,12 @@
   yum:  name=gcc state=present
 
 - name: Test for cpanm
-  shell: perl -MApp::cpanminus -e1
+  command: perl -MApp::cpanminus -e1
   register: result
   ignore_errors: true
 
 - name:  Install CPANm
-  shell: curl -L http://cpanmin.us | perl - App::cpanminus
+  command: curl -L http://cpanmin.us | perl - App::cpanminus
   when:  result|failed
 
 - name: add cpanm symbolic link to /usr/bin/
@@ -41,3 +41,36 @@
     - parent
     - DBI
     - DBD::mysql
+
+# Put MT source
+- name: install unzip
+  yum: name=unzip state=present
+
+- name: Put MT source code
+  unarchive: src=/Users/kosukesakai/source/mt_playbook/MT-6.2.4.zip dest=/tmp owner=vagrant group=apache
+
+# ToDo: 冪等性
+- name: move to static directory
+  command: mv /tmp/MT-6.2.4/mt-static /var/www/html/mt-static
+
+# ToDo: 冪等性
+- name: move to application directory
+  command: mv /tmp/MT-6.2.4 /var/www/cgi-bin/mt
+
+- name: set permission for application directory
+  file: path={{ item }} mode=0755
+  with_fileglob:
+    - /var/www/cgi-bin/mt/*.cgi
+
+- name: set permission for blog directory
+  file: path=/var/www/html mode=0777
+
+- name: set permission for mt-static
+  file: path=/var/www/html/mt-static/support mode=0777
+
+# Create DB
+- name: create DB
+  mysql_db: name=mt_db state=present collation=utf8_general_ci encoding=utf8
+
+- name: create Users
+  mysql_user: name=mt password=1234qwer priv=mt_db.*:ALL state=present
