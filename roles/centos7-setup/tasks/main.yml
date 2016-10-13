@@ -1,0 +1,25 @@
+---
+# tasks file for centos7-setup
+- name: yum update
+  yum: name=* state=latest
+
+# Disable selinux
+- name: install selinux module
+  yum: name=libselinux-python state=present
+
+- name: disable SElinux
+  selinux: state=disabled
+
+# Time zone
+- name: Set time zone
+  command: timedatectl set-timezone Asia/Ho_Chi_Minh
+  # systemdは2.2から
+  # timezone: name=Asia/Ho_Chi_Minh
+
+- name: Install ntp
+  yum: name=ntp state=present
+
+- name: Boot and enable ntp
+  service: name=ntpd enabled=yes state=started
+  # systemdは2.2から
+  # systemd: name=ntpd enabled=yes state=started

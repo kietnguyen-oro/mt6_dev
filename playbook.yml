@@ -1,0 +1,6 @@
+- hosts: all
+  become: True
+  roles:
+    - centos7-setup
+    - mariadb
+    - movabletype6

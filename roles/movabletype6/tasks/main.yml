@@ -1,0 +1,43 @@
+---
+# tasks file for movabletype6
+
+# Refs: https://github.com/miyagawa/cpanminus/issues/493
+- name: Ensure perl-core installed
+  yum: name=perl-core state=present
+
+# Install CPANm
+- name: Ensure gcc installed
+  yum:  name=gcc state=present
+
+- name: Test for cpanm
+  shell: perl -MApp::cpanminus -e1
+  register: result
+  ignore_errors: true
+
+- name:  Install CPANm
+  shell: curl -L http://cpanmin.us | perl - App::cpanminus
+  when:  result|failed
+
+- name: add cpanm symbolic link to /usr/bin/
+  file: src=/usr/local/bin/cpanm
+        dest=/usr/bin/cpanm
+        state=link
+
+- name: Ensure required Perl modules installed
+  yum: name={{ item }} state=present
+  with_items:
+    - perl-Test-Harness
+    - perl-Time-HiRes
+
+# Install CPAN module for MT
+- name: Install CPAN modules
+  cpanm: name={{ item }}
+  with_items:
+    - CGI
+    - Image::Size
+    - File::Spec
+    - CGI::Cookie
+    - LWP::UserAgent
+    - parent
+    - DBI
+    - DBD::mysql

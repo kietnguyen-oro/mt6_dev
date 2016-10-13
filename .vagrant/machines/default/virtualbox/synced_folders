@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/kosukesakai/source/mt_playbook","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
