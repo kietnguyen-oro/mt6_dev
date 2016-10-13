@@ -19,7 +19,7 @@
   yum: name=unzip state=present
 
 - name: Put MT source code
-  unarchive: src=/Users/kosukesakai/source/mt_playbook/MT-6.2.4.zip dest=/tmp owner=vagrant group=apache
+  unarchive: src=MT-6.2.4.zip dest=/tmp owner=vagrant group=apache
 
 # ToDo: 冪等性
 - name: move to static directory
