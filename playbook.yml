@@ -3,4 +3,5 @@
   roles:
     - centos7-setup
     - mariadb
+    - apache
     - movabletype6
