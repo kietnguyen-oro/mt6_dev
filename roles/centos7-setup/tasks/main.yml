@@ -12,7 +12,7 @@
 
 # Time zone
 - name: Set time zone
-  command: timedatectl set-timezone Asia/Ho_Chi_Minh
+  command: timedatectl set-timezone {{ timezone }}
   # systemdは2.2から
   # timezone: name=Asia/Ho_Chi_Minh
 

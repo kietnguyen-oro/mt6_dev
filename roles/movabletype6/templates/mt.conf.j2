@@ -2,6 +2,6 @@
   AddHandler cgi-script .cgi
 </IfModule mime_module>
 
-<Directory "/var/www/cgi-bin">
+<Directory "{{ mt_application_dir }}">
     Options +ExecCGI
 </Directory>

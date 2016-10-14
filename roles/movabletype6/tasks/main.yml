@@ -19,36 +19,42 @@
   yum: name=unzip state=present
 
 - name: Put MT source code
-  unarchive: src=MT-6.2.4.zip dest=/tmp owner=vagrant group=apache
+  unarchive: src={{ mt_source_path }} dest=/tmp owner=vagrant group=apache list_files=yes
+  register: ret
 
+- set_fact: mt_tmp_path=/tmp/{{ ret.files[0] }}
+
+
+- file: path={{ mt_static_dir }} state=absent
 # ToDo: 冪等性
 - name: move to static directory
-  command: mv /tmp/MT-6.2.4/mt-static /var/www/html/mt-static
+  command: mv {{ mt_tmp_path }}mt-static {{ mt_static_dir }}
 
+- file: path={{ mt_application_dir }} state=absent
 # ToDo: 冪等性
 - name: move to application directory
-  command: mv /tmp/MT-6.2.4 /var/www/cgi-bin/mt
+  command: mv {{ mt_tmp_path }} {{ mt_application_dir }}
 
 - name: Create mt-config.cgi
-  template: src=templates/mt-config.cgi.j2 dest=/var/www/cgi-bin/mt/mt-config.cgi
+  template: src=templates/mt-config.cgi.j2 dest={{ mt_application_dir }}/mt-config.cgi
 
 - name: set permission for application directory
   file: path={{ item }} mode=0755
   with_fileglob:
-    - /var/www/cgi-bin/mt/*.cgi
+    - "{{ mt_application_dir }}/*.cgi"
 
 - name: set permission for blog directory
-  file: path=/var/www/html mode=0777
+  file: path={{ mt_website_dir }} mode=0777
 
 - name: set permission for mt-static
-  file: path=/var/www/html/mt-static/support mode=0777
+  file: path={{ mt_static_dir }}/support mode=0777
 
 # Create DB
 - name: create DB
-  mysql_db: name=mt_db state=present collation=utf8_general_ci encoding=utf8
+  mysql_db: name={{ mt_db_name }} state=present collation=utf8_general_ci encoding=utf8
 
 - name: create Users
-  mysql_user: name=mt password=1234qwer priv=mt_db.*:ALL state=present
+  mysql_user: name={{ mt_db_user_name }} password={{ mt_db_user_password }} priv={{ mt_db_name }}.*:ALL state=present
 
 - name: Add apache conf
   template: src=templates/mt.conf.j2 dest=/etc/httpd/conf.d/mt.conf

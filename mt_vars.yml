@@ -1,0 +1,13 @@
+---
+timezone: Asia/Ho_Chi_Minh
+mt_source_path: MT-6.2.4.zip
+mt_application_dir: /var/www/cgi-bin/mt
+mt_static_dir: /var/www/html/mt-static
+mt_website_dir: /var/www/html
+mt_cgi_url_path: /cgi-bin/mt/
+mt_static_url_path: /mt-static/
+mt_db_name: mt_db
+mt_db_user_name: mt
+mt_db_user_password: 1234qwer
+
+mt_default_language: ja

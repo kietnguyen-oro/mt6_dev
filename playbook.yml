@@ -1,5 +1,7 @@
 - hosts: all
   become: True
+  vars_files:
+    - mt_vars.yml
   roles:
     - centos7-setup
     - mariadb

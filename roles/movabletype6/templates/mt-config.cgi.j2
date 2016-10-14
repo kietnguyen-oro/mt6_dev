@@ -13,16 +13,16 @@
 
 #======== REQUIRED SETTINGS ==========
 
-CGIPath        /cgi-bin/mt/
-StaticWebPath  /mt-static/
-StaticFilePath /var/www/html/mt-static
+CGIPath        {{ mt_cgi_url_path }}
+StaticWebPath  {{ mt_static_url_path }}
+StaticFilePath {{ mt_static_dir }}
 
 #======== DATABASE SETTINGS ==========
 
 ObjectDriver DBI::mysql
-Database mt_db
-DBUser mt
-DBPassword 1234qwer
+Database {{ mt_db_name }}
+DBUser {{ mt_db_user_name }}
+DBPassword {{ mt_db_user_password }}
 DBHost localhost
 
 #======== MAIL =======================
@@ -30,4 +30,4 @@ EmailAddressMain admin@example.com
 MailTransfer sendmail
 SendMailPath /usr/lib/sendmail
 
-DefaultLanguage ja
+DefaultLanguage {{ mt_default_language }}
