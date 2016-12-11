@@ -1,6 +1,6 @@
 ---
 timezone: Asia/Ho_Chi_Minh
-mt_source_path: MT-6.2.4.zip
+mt_source_path: MT-6.3.2.zip
 mt_application_dir: /var/www/cgi-bin/mt
 mt_static_dir: /var/www/html/mt-static
 mt_website_dir: /var/www/html
